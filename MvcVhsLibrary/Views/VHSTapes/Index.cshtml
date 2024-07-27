@@ -1,0 +1,106 @@
+﻿@using MvcVhsLibrary.Helpers
+@model PaginatedList<MvcVhsLibrary.Models.VHSTape>
+
+@{
+    ViewData["Title"] = "Tape Library";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div aria-label="Page Options" id="page-options">
+    <form method="get" asp-action="Index">
+        <div class="form-group">
+            <label for="pageSize">Page Size</label>
+            <input type="number" class="form-control" id="pageSize" name="pageSize" value="@Model.PageSize" min="10" max="500" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Set Page Size</button>
+    </form>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <!-- [0] because we're using PaginatedList instead of IEnumerable, if changed back remove [0] -->
+                @Html.DisplayNameFor(model => model[0].MovieName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Barcode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].TotalTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Country)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Barcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@if (Model.HasPreviousPage || Model.HasNextPage)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageIndex - 1, pageSize = Model.PageSize })">Previous</a>
+                </li>
+            }
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = Model.PageSize })">@i</a>
+                </li>
+            }
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageIndex + 1, pageSize = Model.PageSize })">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
